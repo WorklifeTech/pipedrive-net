@@ -7,7 +7,7 @@ using PipedriveNet.Dto;
 
 namespace PipedriveNet.Endpoints
 {
-    public class StagesEndpoint <TStage>
+    public class StagesEndpoint<TStage>
     {
         private readonly ApiClient _client;
 

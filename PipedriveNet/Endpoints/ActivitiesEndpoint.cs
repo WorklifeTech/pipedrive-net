@@ -16,7 +16,7 @@ namespace PipedriveNet.Endpoints
         {
             _client = client;
         }
-        
+
         public Task Delete(int id)
         {
             return _client.Delete("activities/" + id);
