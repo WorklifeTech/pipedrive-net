@@ -22,21 +22,45 @@ namespace PipedriveNet.Endpoints
 
         public Task<ActivityDto> Create(int dealId, string type, string subject, DateTime? due)
         {
-            var req = new JObject();
-            req["deal_id"] = dealId;
-            req["type"] = type;
-            req["subject"] = subject;
+            var activity = new JObject
+            {
+                ["deal_id"] = dealId,
+                ["type"] = type,
+                ["subject"] = subject
+            };
+
             if (due.HasValue)
             {
-                req["due_date"] = due.Value.ToString("yyyy-MM-dd");
-                req["due_time"] = due.Value.ToString("hh:mm");
+                activity["due_date"] = due.Value.ToString("yyyy-MM-dd");
+                activity["due_time"] = due.Value.ToString("hh:mm");
             }
-            return _client.Post<ActivityDto>("activities", req);
+
+            return _client.Post<ActivityDto>("activities", activity);
+        }
+
+        public Task<ActivityDto> CreateTask(int orgId, int personId, string subject, int userId, DateTime? due)
+        {
+            var task = new JObject
+            {
+                ["org_id"] = orgId,
+                ["person_id"] = personId,
+                ["user_id"] = userId,
+                ["type"] = "task",
+                ["subject"] = subject
+            };
+
+            if (due.HasValue)
+            {
+                task["due_date"] = due.Value.ToString("yyyy-MM-dd");
+                task["due_time"] = due.Value.ToString("hh:mm");
+            }
+
+            return _client.Post<ActivityDto>("activities", task);
         }
 
         public Task<List<ActivityDto>> GetByDeal(int dealId)
         {
-            return _client.Get<List<ActivityDto>>("deals/" + dealId + "/activities?limit=9000");
+            return _client.Get<List<ActivityDto>>($"deals/{dealId}/activities?limit=9000");
         }
     }
 }
