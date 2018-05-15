@@ -5,34 +5,44 @@ using PipedriveNet.Endpoints;
 
 namespace PipedriveNet
 {
-
-    public class PipedriveClient : PipedriveClient<PersonDto, PipelineDto, StageDto, DealDto, UserDto>
+    public class PipedriveClient : PipedriveClient<PersonDto, PipelineDto, StageDto, DealDto, UserDto, OrganizationDto>
     {
         public PipedriveClient(string apiKey) : base(apiKey)
         {
         }
     }
 
-    public class PipedriveClient<TPerson, TPipeline, TStage, TDeal, TUser>
+    public class PipedriveClient<TPerson, TPipeline, TStage, TDeal, TUser, TOrganization>
         where TPerson : PersonDto
         where TPipeline : PipelineDto
         where TStage : StageDto
         where TDeal : DealDto
         where TUser : UserDto
+        where TOrganization : OrganizationDto
     {
         private readonly ContractResolver _resolver = new ContractResolver();
 
         public PersonsEndpoint<TPerson> Persons { get; private set; }
+
         public PipelinesEndpoint<TPipeline> Pipelines { get; private set; }
+
         public StagesEndpoint<TStage> Stages { get; private set; }
+
         public DealsEndpoint<TDeal> Deals { get; private set; }
+
         public ActivitesEndpoint Activites { get; private set; }
+
         public NotesEndpoint Notes { get; private set; }
+
         public UsersEndpoint<TUser> Users { get; private set; }
+
+        public OrganizationsEndpoint<TOrganization> Organizations { get; }
 
         public PipedriveClient(string apiKey)
         {
-            if (apiKey == null) throw new ArgumentNullException("apiKey");
+            if (apiKey == null)
+                throw new ArgumentNullException("apiKey");
+
             var client = new ApiClient(apiKey, _resolver);
             Persons = new PersonsEndpoint<TPerson>(client);
             Pipelines = new PipelinesEndpoint<TPipeline>(client);
@@ -41,6 +51,7 @@ namespace PipedriveNet
             Activites = new ActivitesEndpoint(client);
             Notes = new NotesEndpoint(client);
             Users = new UsersEndpoint<TUser>(client);
+            Organizations = new OrganizationsEndpoint<TOrganization>(client);
         }
 
         public class CustomFieldConfigurator<T>
